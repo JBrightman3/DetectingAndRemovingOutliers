@@ -1,0 +1,10 @@
+SELECT
+	value_quartile,
+	MAX(value) AS quartile_break
+FROM(
+	SELECT
+    	value,
+		NTILE(4) OVER (ORDER BY value) AS value_quartile
+	FROM "AWP01_Ph03"."ActiveEnergyBurned") AS quartiles
+WHERE value_quartile IN (1, 3)
+GROUP BY value_quartile;
