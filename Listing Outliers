@@ -1,0 +1,51 @@
+SELECT value
+FROM "AWP01_Ph03"."ActiveEnergyBurned"
+WHERE value < [Q1 - 3*(Q3-Q1)] OR value > [Q3 + 3*(Q3-Q1)];
+
+with orderedList AS (
+SELECT
+	value,
+	ROW_NUMBER() OVER (ORDER BY value) AS row_n
+FROM "AWP01_Ph03"."ActiveEnergyBurned"
+),
+iqr AS (
+SELECT
+	value,
+	(
+		SELECT value AS quartile_break
+		FROM orderedList
+		WHERE row_n = FLOOR((SELECT COUNT(*)
+			FROM "AWP01_Ph03"."ActiveEnergyBurned")*0.75)
+			) AS q_three,
+	(
+		SELECT value AS quartile_break
+		FROM orderedList
+		WHERE row_n = FLOOR((SELECT COUNT(*)
+			FROM "AWP01_Ph03"."ActiveEnergyBurned")*0.25)
+			) AS q_one,
+	3 * ((
+		SELECT value AS quartile_break
+		FROM orderedList
+		WHERE row_n = FLOOR((SELECT COUNT(*)
+			FROM "AWP01_Ph03"."ActiveEnergyBurned")*0.75)
+			) - (
+			SELECT value AS quartile_break
+			FROM orderedList
+			WHERE row_n = FLOOR((SELECT COUNT(*)
+				FROM "AWP01_Ph03"."ActiveEnergyBurned")*0.25)
+			)) AS outlier_range
+	FROM orderedList
+)
+
+SELECT value
+FROM iqr
+WHERE value >= ((SELECT MAX(q_three)
+	FROM iqr) +
+	(SELECT MAX(outlier_range)
+		FROM iqr)) OR
+		value <= ((SELECT MAX(q_one)
+	FROM iqr) -
+	(SELECT MAX(outlier_range)
+		FROM iqr))
+
+
