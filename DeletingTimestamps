@@ -1,0 +1,10 @@
+//View the data with timestamps before Febuary 1st, 2018
+
+SELECT * 
+FROM "AWP01_Ph03"."ActiveEnergyBurned"
+WHERE creation_date < '2018-02-01';
+
+//Delete those values
+
+DELETE FROM "AWP01_Ph03"."ActiveEnergyBurned"
+WHERE creation_date < '2018-02-01';
