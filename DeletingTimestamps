@@ -14,4 +14,4 @@ WHERE creation_date < '2018-02-01';
  ALTER TABLE "AWP01_Ph03"."ActiveEnergyBurned" DROP COLUMN activeenergyburned_id;
  ALTER TABLE "AWP01_Ph03"."ActiveEnergyBurned" ADD COLUMN activeenergyburned_id SERIAL PRIMARY KEY;
  
- 
+ SELECT * FROM "AWP01_Ph03"."ActiveEnergyBurned";
