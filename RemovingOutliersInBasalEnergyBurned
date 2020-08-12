@@ -1,0 +1,21 @@
+// List values by descending order
+
+SELECT * FROM "AWP14_Ph16"."BasalEnergyBurned" ORDER BY value DESC;
+
+// If the list shows extreme outliers, remove those rows
+
+DELETE FROM "AWP14_Ph16"."BasalEnergyBurned"
+WHERE value > 1000;
+
+// Restart the identity sequence
+
+ALTER TABLE "AWP14_Ph16"."BasalEnergyBurned" DROP COLUMN basalenergyburned_id;
+ALTER TABLE "AWP14_Ph16"."BasalEnergyBurned" ADD COLUMN basalenergyburned_id SERIAL PRIMARY KEY;
+ 
+// Review the table to ensure the outliers have been removed
+
+SELECT * FROM "AWP14_Ph16"."BasalEnergyBurned" ORDER BY value DESC;
+
+// Ensure that the identity sequence has been reset correctly
+
+SELECT * FROM "AWP14_Ph16"."BasalEnergyBurned"
